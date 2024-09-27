@@ -1,0 +1,23 @@
+{
+  "name": "tsblackjack",
+  "version": "1.0.0",
+  "description": "TS version of the blackjack API",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "tsc",
+    "run": "ts-node src/blackjack.ts"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "better-sqlite3": "^9.6.0",
+    "express": "^4.21.0",
+    "typeorm": "^0.3.20",
+    "typescript": "^5.6.2"
+  },
+  "devDependencies": {
+    "@types/express": "^5.0.0"
+  }
+}
