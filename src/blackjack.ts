@@ -1,7 +1,7 @@
 // Simple Blackjack API
 import express from 'express';
 import * as crypto from 'node:crypto';
-import {errorMsg, game, responseMsg, stat} from "./models";
+import {errorMsg, game, responseMsg, stat, statsMsg} from "./models";
 import {utils} from "./utils";
 import {dataSource} from "./datasource";
 import {gamelogic} from "./gamelogic";
@@ -12,7 +12,7 @@ blackjackAPI.use(express.json());
 // Endpoints
 blackjackAPI.get('/deal', async (req, res): Promise<void> => {
     const deviceId = utils.deviceHash(req);
-    const gameRepo = dataSource.getRepository("game");
+    const gameRepo = dataSource.getRepository<game>("game");
     let retGame = await gameRepo.findOneBy({ device: deviceId });
 
     if (!retGame) {
@@ -22,8 +22,6 @@ blackjackAPI.get('/deal', async (req, res): Promise<void> => {
         await gameRepo.save(newGame);
         console.log(`Created new game for ${deviceId}:${newGame.token}`);
         retGame = newGame;
-    } else {
-        Object.setPrototypeOf(retGame, game.prototype);
     }
     console.log(`DEAL: ${retGame.token}`);
     const resp = new responseMsg(retGame.token, retGame.playerCards, [],
@@ -43,7 +41,7 @@ blackjackAPI.get('/hit', async (req, res): Promise<void> => {
         console.log("BUST");
     }
 
-    const gameRepo = dataSource.getRepository("game");
+    const gameRepo = dataSource.getRepository<game>("game");
     const resp = new responseMsg(retGame.token, retGame.playerCards, [],
         gamelogic.value(retGame.playerCards), 0, retGame.status);
     if(retGame.status === "Bust") {
@@ -88,7 +86,7 @@ blackjackAPI.get('/stay', async (req, res): Promise<void> => {
     const resp = new responseMsg(retGame.token, retGame.playerCards, retGame.dealerCards,
         playerVal, dealerVal, retGame.status);
 
-    const gameRepo = dataSource.getRepository("game");
+    const gameRepo = dataSource.getRepository<game>("game");
     await gameRepo.remove(retGame);
 
     res.send(JSON.stringify(resp));
@@ -96,7 +94,7 @@ blackjackAPI.get('/stay', async (req, res): Promise<void> => {
 
 blackjackAPI.get('/stats', async (req, res): Promise<void> => {
     const deviceId = utils.deviceHash(req);
-    const statRepo = dataSource.getRepository("stat");
+    const statRepo = dataSource.getRepository<stat>("stat");
     let userStats = await statRepo.findOneBy({device: deviceId});
     console.log('STATS');
     if (!userStats) {
@@ -105,8 +103,8 @@ blackjackAPI.get('/stats', async (req, res): Promise<void> => {
         res.send(JSON.stringify(new errorMsg(400, "Missing Device")));
         return;
     }
-    delete userStats.device;
-    res.send(JSON.stringify(userStats));
+    const retStats = new statsMsg(userStats.wins, userStats.loses, userStats.draws);
+    res.send(JSON.stringify(retStats));
 });
 
 // Bootstrap

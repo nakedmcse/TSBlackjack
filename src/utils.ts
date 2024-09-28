@@ -17,8 +17,8 @@ export class utils {
             res.send(JSON.stringify(new errorMsg(400, "Missing Token")));
             return null;
         }
-        const gameRepo = dataSource.getRepository("game");
-        const retGame = await gameRepo.findOneBy({ token: req.query.token });
+        const gameRepo = dataSource.getRepository<game>("game");
+        const retGame = await gameRepo.findOneBy({ token: req.query.token as string });
         if(!retGame) {
             res.status(400);
             res.send(JSON.stringify(new errorMsg(400, "Missing Game")));
@@ -30,7 +30,7 @@ export class utils {
 
     public static async updateStats(req: Request, action: string): Promise<void> {
         const deviceId = this.deviceHash(req);
-        const statRepo = dataSource.getRepository("stat");
+        const statRepo = dataSource.getRepository<stat>("stat");
         let userStats = await statRepo.findOneBy({device: deviceId});
         if (!userStats) {
             userStats = new stat(deviceId,0,0,0);

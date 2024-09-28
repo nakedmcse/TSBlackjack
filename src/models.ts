@@ -69,3 +69,7 @@ export class responseMsg {
 export class errorMsg {
     public constructor(public status: number, public message: string) {}
 }
+
+export class statsMsg {
+    public constructor(public wins:number, public loses:number, public draws:number) {}
+}
