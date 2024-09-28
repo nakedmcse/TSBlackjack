@@ -85,11 +85,12 @@ blackjackAPI.get('/stay', async (req, res): Promise<void> => {
         await utils.updateStats(req, "draw");
     }
 
+    const resp = new responseMsg(retGame.token, retGame.playerCards, retGame.dealerCards,
+        playerVal, dealerVal, retGame.status);
+
     const gameRepo = dataSource.getRepository("game");
     await gameRepo.remove(retGame);
 
-    const resp = new responseMsg(retGame.token, retGame.playerCards, retGame.dealerCards,
-        playerVal, dealerVal, retGame.status);
     res.send(JSON.stringify(resp));
 });
 
