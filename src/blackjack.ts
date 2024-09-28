@@ -4,6 +4,7 @@ import * as crypto from 'node:crypto';
 import {errorMsg, game, responseMsg, stat} from "./models";
 import {utils} from "./utils";
 import {dataSource} from "./datasource";
+import {gamelogic} from "./gamelogic";
 
 const blackjackAPI = express();
 blackjackAPI.use(express.json());
@@ -15,17 +16,18 @@ blackjackAPI.get('/deal', async (req, res): Promise<void> => {
     let retGame = await gameRepo.findOneBy({ device: deviceId });
 
     if (!retGame) {
-        retGame = new game(crypto.randomUUID(), deviceId, "playing", Date.now());
-        retGame.createDeck();
-        retGame.deal();
-        await gameRepo.save(retGame);
-        console.log(`Created new game for ${deviceId}:${retGame.token}`);
+        const newGame = new game(crypto.randomUUID(), deviceId, "playing", Date.now());
+        gamelogic.createDeck(newGame);
+        gamelogic.deal(newGame);
+        await gameRepo.save(newGame);
+        console.log(`Created new game for ${deviceId}:${newGame.token}`);
+        retGame = newGame;
     } else {
         Object.setPrototypeOf(retGame, game.prototype);
     }
     console.log(`DEAL: ${retGame.token}`);
     const resp = new responseMsg(retGame.token, retGame.playerCards, [],
-        retGame.value(retGame.playerCards), 0, retGame.status);
+        gamelogic.value(retGame.playerCards), 0, retGame.status);
     res.send(JSON.stringify(resp));
 });
 
@@ -34,16 +36,16 @@ blackjackAPI.get('/hit', async (req, res): Promise<void> => {
     if(!retGame) {
         return;
     }
-    retGame.hit();
+    gamelogic.hit(retGame);
     console.log(`HIT: ${retGame.token}`);
-    if(retGame.value(retGame.playerCards) > 21) {
+    if(gamelogic.value(retGame.playerCards) > 21) {
         retGame.status = "Bust";
         console.log("BUST");
     }
 
     const gameRepo = dataSource.getRepository("game");
     const resp = new responseMsg(retGame.token, retGame.playerCards, [],
-        retGame.value(retGame.playerCards), 0, retGame.status);
+        gamelogic.value(retGame.playerCards), 0, retGame.status);
     if(retGame.status === "Bust") {
         await gameRepo.remove(retGame);
         await utils.updateStats(req, "loss");
@@ -58,10 +60,10 @@ blackjackAPI.get('/stay', async (req, res): Promise<void> => {
     if(!retGame) {
         return;
     }
-    retGame.stay();
+    gamelogic.stay(retGame);
     console.log(`STAY: ${retGame.token}`);
-    const playerVal = retGame.value(retGame.playerCards);
-    const dealerVal = retGame.value(retGame.dealerCards);
+    const playerVal = gamelogic.value(retGame.playerCards);
+    const dealerVal = gamelogic.value(retGame.dealerCards);
     if(dealerVal > 21) {
         retGame.status = "Dealer Bust";
         console.log("DEALER BUST");
@@ -87,7 +89,7 @@ blackjackAPI.get('/stay', async (req, res): Promise<void> => {
     await gameRepo.remove(retGame);
 
     const resp = new responseMsg(retGame.token, retGame.playerCards, retGame.dealerCards,
-        retGame.value(retGame.playerCards), dealerVal, retGame.status);
+        playerVal, dealerVal, retGame.status);
     res.send(JSON.stringify(resp));
 });
 
