@@ -20,6 +20,10 @@ export class ServiceGame {
     public async getDevice(device: string): Promise<Game|null> {
         return await this.repo.getEntryByDevice(device);
     }
+
+    public async getActiveGame(device: string, token: string): Promise<Game|null> {
+        return token === "" ? await this.getDevice(device) : await this.getToken(token);
+    }
 }
 
 export class ServiceStat {

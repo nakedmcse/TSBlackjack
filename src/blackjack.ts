@@ -44,8 +44,12 @@ blackjackAPI.get('/deal', async (req, res): Promise<void> => {
 
 blackjackAPI.get('/hit', async (req, res): Promise<void> => {
     const device = Utils.deviceHash(req);
-    const retGame = await Utils.checkToken(req, res);
+    const token = req.query.token as string;
+    const gameService = new ServiceGame();
+    const retGame = await gameService.getActiveGame(device, token);
     if(!retGame) {
+        res.status(400);
+        res.send(JSON.stringify(new ErrorMsg(400, "Missing Game")));
         return;
     }
 
@@ -56,8 +60,12 @@ blackjackAPI.get('/hit', async (req, res): Promise<void> => {
 
 blackjackAPI.get('/stay', async (req, res): Promise<void> => {
     const device = Utils.deviceHash(req);
-    const retGame = await Utils.checkToken(req, res);
+    const token = req.query.token as string;
+    const gameService = new ServiceGame();
+    const retGame = await gameService.getActiveGame(device, token);
     if(!retGame) {
+        res.status(400);
+        res.send(JSON.stringify(new ErrorMsg(400, "Missing Game")));
         return;
     }
 
