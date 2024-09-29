@@ -73,3 +73,9 @@ export class ErrorMsg {
 export class StatsMsg {
     public constructor(public wins:number, public loses:number, public draws:number) {}
 }
+
+export enum GameState {
+    Win,
+    Loss,
+    Draw
+}

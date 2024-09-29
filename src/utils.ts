@@ -1,8 +1,8 @@
 // Utils functions
 import {Request, Response} from 'express';
 import * as crypto from 'node:crypto';
-import {ErrorMsg, Game, Stat} from "./models";
-import {ServiceGame, ServiceStat} from "./services";
+import {ErrorMsg, Game} from "./models";
+import {ServiceGame} from "./services";
 
 export class Utils {
     public static deviceHash(req: Request): string {
@@ -26,26 +26,5 @@ export class Utils {
         }
 
         return retGame;
-    }
-
-    public static async updateStats(req: Request, action: string): Promise<void> {
-        const deviceId = this.deviceHash(req);
-        const statService = new ServiceStat();
-        let userStats = await statService.getStat(deviceId);
-        if (!userStats) {
-            userStats = new Stat(deviceId,0,0,0);
-        }
-        switch(action) {
-            case "win":
-                userStats.wins++;
-                break;
-            case "loss":
-                userStats.loses++;
-                break;
-            case "draw":
-                userStats.draws++;
-                break;
-        }
-        await statService.saveStat(userStats);
     }
 }

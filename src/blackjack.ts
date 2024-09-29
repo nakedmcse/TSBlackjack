@@ -1,7 +1,7 @@
 // Simple Blackjack API
 import express from 'express';
 import * as crypto from 'node:crypto';
-import {ErrorMsg, Game, ResponseMsg, StatsMsg} from "./models";
+import {ErrorMsg, Game, GameState, ResponseMsg, StatsMsg} from "./models";
 import {Utils} from "./utils";
 import {dataSource} from "./db/datasource";
 import {Gamelogic} from "./gamelogic";
@@ -43,6 +43,8 @@ blackjackAPI.get('/deal', async (req, res): Promise<void> => {
 });
 
 blackjackAPI.get('/hit', async (req, res): Promise<void> => {
+    const statService = new ServiceStat();
+    const device = Utils.deviceHash(req);
     const retGame = await Utils.checkToken(req, res);
     if(!retGame) {
         return;
@@ -59,7 +61,7 @@ blackjackAPI.get('/hit', async (req, res): Promise<void> => {
         Gamelogic.value(retGame.playerCards), 0, retGame.status);
     if(retGame.status === "Bust") {
         await gameService.deleteGame(retGame)
-        await Utils.updateStats(req, "loss");
+        await statService.updateStats(device, GameState.Loss);
     } else {
         await gameService.saveGame(retGame);
     }
@@ -67,6 +69,8 @@ blackjackAPI.get('/hit', async (req, res): Promise<void> => {
 });
 
 blackjackAPI.get('/stay', async (req, res): Promise<void> => {
+    const statService = new ServiceStat();
+    const device = Utils.deviceHash(req);
     const retGame = await Utils.checkToken(req, res);
     if(!retGame) {
         return;
@@ -78,22 +82,22 @@ blackjackAPI.get('/stay', async (req, res): Promise<void> => {
     if(dealerVal > 21) {
         retGame.status = "Dealer Bust";
         console.log("DEALER BUST");
-        await Utils.updateStats(req, "win");
+        await statService.updateStats(device, GameState.Win);
     }
     else if(playerVal > dealerVal) {
         retGame.status = "Player Wins";
         console.log("PLAYER WIN");
-        await Utils.updateStats(req, "win");
+        await statService.updateStats(device, GameState.Win);
     }
     else if(dealerVal > playerVal) {
         retGame.status = "Dealer Wins";
         console.log("DEALER WIN");
-        await Utils.updateStats(req, "loss");
+        await statService.updateStats(device, GameState.Loss);
     }
     else {
         retGame.status = "Draw";
         console.log("DRAW");
-        await Utils.updateStats(req, "draw");
+        await statService.updateStats(device, GameState.Draw);
     }
 
     const resp = new ResponseMsg(retGame.token, retGame.playerCards, retGame.dealerCards,

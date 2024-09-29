@@ -1,6 +1,6 @@
 // Services for Game and Stat
 import {RepoGame, RepoStat} from "./db/repo";
-import {Game, Stat} from "./models";
+import {Game, GameState, Stat} from "./models";
 
 export class ServiceGame {
     private repo: RepoGame;
@@ -39,5 +39,24 @@ export class ServiceStat {
 
     public async getStat(device: string): Promise<Stat|null> {
         return await this.repo.getEntry(device);
+    }
+
+    public async updateStats(device: string, action: GameState): Promise<void> {
+        let userStats = await this.getStat(device);
+        if (!userStats) {
+            userStats = new Stat(device,0,0,0);
+        }
+        switch(action) {
+            case GameState.Win:
+                userStats.wins++;
+                break;
+            case GameState.Loss:
+                userStats.loses++;
+                break;
+            case GameState.Draw:
+                userStats.draws++;
+                break;
+        }
+        await this.saveStat(userStats);
     }
 }
