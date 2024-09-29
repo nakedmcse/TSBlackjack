@@ -1,7 +1,7 @@
 // Simple Blackjack API
 import express from 'express';
 import * as crypto from 'node:crypto';
-import {ErrorMsg, Game, GameState, ResponseMsg, StatsMsg} from "./models";
+import {ErrorMsg, Game, ResponseMsg, StatsMsg} from "./models";
 import {Utils} from "./utils";
 import {dataSource} from "./db/datasource";
 import {Gamelogic} from "./gamelogic";
@@ -55,42 +55,13 @@ blackjackAPI.get('/hit', async (req, res): Promise<void> => {
 });
 
 blackjackAPI.get('/stay', async (req, res): Promise<void> => {
-    const statService = new ServiceStat();
     const device = Utils.deviceHash(req);
     const retGame = await Utils.checkToken(req, res);
     if(!retGame) {
         return;
     }
-    Gamelogic.stay(retGame);
-    console.log(`STAY: ${retGame.token}`);
-    const playerVal = Gamelogic.value(retGame.playerCards);
-    const dealerVal = Gamelogic.value(retGame.dealerCards);
-    if(dealerVal > 21) {
-        retGame.status = "Dealer Bust";
-        console.log("DEALER BUST");
-        await statService.updateStats(device, GameState.Win);
-    }
-    else if(playerVal > dealerVal) {
-        retGame.status = "Player Wins";
-        console.log("PLAYER WIN");
-        await statService.updateStats(device, GameState.Win);
-    }
-    else if(dealerVal > playerVal) {
-        retGame.status = "Dealer Wins";
-        console.log("DEALER WIN");
-        await statService.updateStats(device, GameState.Loss);
-    }
-    else {
-        retGame.status = "Draw";
-        console.log("DRAW");
-        await statService.updateStats(device, GameState.Draw);
-    }
 
-    const resp = new ResponseMsg(retGame.token, retGame.playerCards, retGame.dealerCards,
-        playerVal, dealerVal, retGame.status);
-
-    const gameService = new ServiceGame();
-    await gameService.deleteGame(retGame);
+    const resp = await Gamelogic.stay(retGame, device);
 
     res.send(JSON.stringify(resp));
 });

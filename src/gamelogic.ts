@@ -6,6 +6,9 @@ export class Gamelogic {
     public static suits = ['\u2660','\u2663','\u2665','\u2666'];
     public static faces = ['2','3','4','5','6','7','8','9','10','A','J','Q','K'];
 
+    private static gameService = new ServiceGame();
+    private static statService = new ServiceStat();
+
     public static createDeck(game: Game): void {
         for(const suit of this.suits) {
             for(const face of this.faces) {
@@ -36,23 +39,51 @@ export class Gamelogic {
             console.log("BUST");
         }
 
-        const gameService = new ServiceGame();
-        const statService = new ServiceStat();
+
         const resp = new ResponseMsg(game.token, game.playerCards, [],
             this.value(game.playerCards), 0, game.status);
         if(game.status === "Bust") {
-            await gameService.deleteGame(game)
-            await statService.updateStats(device, GameState.Loss);
+            await this.gameService.deleteGame(game)
+            await this.statService.updateStats(device, GameState.Loss);
         } else {
-            await gameService.saveGame(game);
+            await this.gameService.saveGame(game);
         }
         return resp;
     }
 
-    public static stay(game: Game): void {
+    public static async stay(game: Game, device: string): Promise<ResponseMsg> {
         while(this.value(game.dealerCards) < 17) {
             game.dealerCards.push(game.deck.pop() ?? "")
         }
+
+        console.log(`STAY: ${game.token}`);
+        const playerVal = this.value(game.playerCards);
+        const dealerVal = this.value(game.dealerCards);
+        if(dealerVal > 21) {
+            game.status = "Dealer Bust";
+            console.log("DEALER BUST");
+            await this.statService.updateStats(device, GameState.Win);
+        }
+        else if(playerVal > dealerVal) {
+            game.status = "Player Wins";
+            console.log("PLAYER WIN");
+            await this.statService.updateStats(device, GameState.Win);
+        }
+        else if(dealerVal > playerVal) {
+            game.status = "Dealer Wins";
+            console.log("DEALER WIN");
+            await this.statService.updateStats(device, GameState.Loss);
+        }
+        else {
+            game.status = "Draw";
+            console.log("DRAW");
+            await this.statService.updateStats(device, GameState.Draw);
+        }
+
+        const resp = new ResponseMsg(game.token, game.playerCards, game.dealerCards,
+            playerVal, dealerVal, game.status);
+        await this.gameService.deleteGame(game);
+        return resp;
     }
 
     public static value(cards: string[]): number {
