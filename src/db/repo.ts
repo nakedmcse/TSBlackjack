@@ -3,11 +3,7 @@ import {Game, Stat} from "../models";
 import {DaoGame, DaoStat} from "./dao";
 
 export class RepoGame {
-    private dao: DaoGame;
-
-    public constructor() {
-        this.dao = new DaoGame();
-    }
+    private dao: DaoGame = new DaoGame();
 
     public async saveEntry(entry: Game):Promise<void> {
         await this.dao.saveEntry(entry);
@@ -27,11 +23,7 @@ export class RepoGame {
 }
 
 export class RepoStat {
-    private dao: DaoStat;
-
-    public constructor() {
-        this.dao = new DaoStat();
-    }
+    private dao: DaoStat = new DaoStat();
 
     public async saveEntry(entry: Stat):Promise<void> {
         await this.dao.saveEntry(entry);

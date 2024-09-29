@@ -3,11 +3,7 @@ import {RepoGame, RepoStat} from "./db/repo";
 import {Game, GameState, Stat} from "./models";
 
 export class ServiceGame {
-    private repo: RepoGame;
-
-    public constructor() {
-        this.repo = new RepoGame();
-    }
+    private repo: RepoGame = new RepoGame();
 
     public async saveGame(game: Game): Promise<void> {
         await this.repo.saveEntry(game);
@@ -27,11 +23,7 @@ export class ServiceGame {
 }
 
 export class ServiceStat {
-    private repo: RepoStat;
-
-    public constructor() {
-        this.repo = new RepoStat();
-    }
+    private repo: RepoStat = new RepoStat();
 
     public async saveStat(stat: Stat): Promise<void> {
         await this.repo.saveEntry(stat);
