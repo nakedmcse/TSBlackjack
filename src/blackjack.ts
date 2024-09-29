@@ -10,6 +10,10 @@ import {ServiceGame, ServiceStat} from "./services";
 const blackjackAPI = express();
 blackjackAPI.use(express.json());
 
+// Services
+const gameService = new ServiceGame();
+const statService = new ServiceStat();
+
 // Bootstrap
 blackjackAPI.listen(3000, () => {
     dataSource.initialize()
@@ -25,7 +29,6 @@ blackjackAPI.listen(3000, () => {
 // Endpoints
 blackjackAPI.get('/deal', async (req, res): Promise<void> => {
     const deviceId = Utils.deviceHash(req);
-    const gameService = new ServiceGame();
     let retGame = await gameService.getDevice(deviceId);
 
     if (!retGame) {
@@ -45,7 +48,6 @@ blackjackAPI.get('/deal', async (req, res): Promise<void> => {
 blackjackAPI.get('/hit', async (req, res): Promise<void> => {
     const device = Utils.deviceHash(req);
     const token = req.query.token as string;
-    const gameService = new ServiceGame();
     const retGame = await gameService.getActiveGame(device, token);
     if(!retGame) {
         res.status(400);
@@ -61,7 +63,6 @@ blackjackAPI.get('/hit', async (req, res): Promise<void> => {
 blackjackAPI.get('/stay', async (req, res): Promise<void> => {
     const device = Utils.deviceHash(req);
     const token = req.query.token as string;
-    const gameService = new ServiceGame();
     const retGame = await gameService.getActiveGame(device, token);
     if(!retGame) {
         res.status(400);
@@ -76,7 +77,6 @@ blackjackAPI.get('/stay', async (req, res): Promise<void> => {
 
 blackjackAPI.get('/stats', async (req, res): Promise<void> => {
     const deviceId = Utils.deviceHash(req);
-    const statService = new ServiceStat();
     let userStats = await statService.getStat(deviceId);
     console.log('STATS');
     if (!userStats) {
