@@ -1,43 +1,43 @@
 // Services for Game and Stat
-import {repoGame, repoStat} from "./db/repo";
-import {game, stat} from "./models";
+import {RepoGame, RepoStat} from "./db/repo";
+import {Game, Stat} from "./models";
 
-export class serviceGame {
-    private repo: repoGame;
+export class ServiceGame {
+    private repo: RepoGame;
 
     public constructor() {
-        this.repo = new repoGame();
+        this.repo = new RepoGame();
     }
 
-    public async saveGame(Game: game): Promise<void> {
-        await this.repo.saveEntry(Game);
+    public async saveGame(game: Game): Promise<void> {
+        await this.repo.saveEntry(game);
     }
 
-    public async deleteGame(Game: game): Promise<void> {
-        await this.repo.deleteEntry(Game);
+    public async deleteGame(game: Game): Promise<void> {
+        await this.repo.deleteEntry(game);
     }
 
-    public async getToken(token: string): Promise<game|null> {
+    public async getToken(token: string): Promise<Game|null> {
         return await this.repo.getEntryByToken(token);
     }
 
-    public async getDevice(device: string): Promise<game|null> {
+    public async getDevice(device: string): Promise<Game|null> {
         return await this.repo.getEntryByDevice(device);
     }
 }
 
-export class serviceStat {
-    private repo: repoStat;
+export class ServiceStat {
+    private repo: RepoStat;
 
     public constructor() {
-        this.repo = new repoStat();
+        this.repo = new RepoStat();
     }
 
-    public async saveStat(Stat: stat): Promise<void> {
-        await this.repo.saveEntry(Stat);
+    public async saveStat(stat: Stat): Promise<void> {
+        await this.repo.saveEntry(stat);
     }
 
-    public async getStat(device: string): Promise<stat|null> {
+    public async getStat(device: string): Promise<Stat|null> {
         return await this.repo.getEntry(device);
     }
 }

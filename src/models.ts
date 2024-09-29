@@ -5,7 +5,7 @@ import {Column, Entity, Index} from "typeorm";
 @Index(["token"], {
     unique: true,
 })
-export class game {
+export class Game {
     @Column({primary: true, type: "text", unique: true, nullable: false})
     public token: string;
 
@@ -40,7 +40,7 @@ export class game {
 }
 
 @Entity()
-export class stat {
+export class Stat {
     @Column({primary: true, type: "text", unique: true, nullable: false})
     public device: string;
 
@@ -61,15 +61,15 @@ export class stat {
     }
 }
 
-export class responseMsg {
+export class ResponseMsg {
     public constructor(public token: string, public cards: string[], public dealerCards: string[],
                        public handValue: number, public dealerValue: number, public status: string) {}
 }
 
-export class errorMsg {
+export class ErrorMsg {
     public constructor(public status: number, public message: string) {}
 }
 
-export class statsMsg {
+export class StatsMsg {
     public constructor(public wins:number, public loses:number, public draws:number) {}
 }

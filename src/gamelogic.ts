@@ -1,38 +1,38 @@
 // Game logic functions
-import {game} from "./models";
+import {Game} from "./models";
 
-export class gamelogic {
+export class Gamelogic {
     public static suits = ['\u2660','\u2663','\u2665','\u2666'];
     public static faces = ['2','3','4','5','6','7','8','9','10','A','J','Q','K'];
 
-    public static createDeck(Game: game): void {
+    public static createDeck(game: Game): void {
         for(const suit of this.suits) {
             for(const face of this.faces) {
-                Game.deck.push(face + suit);
+                game.deck.push(face + suit);
             }
         }
-        for(let i = 0; i < Game.deck.length; i++) {
-            const j = Math.floor(Math.random() * Game.deck.length);
-            const origCard = Game.deck[i];
-            Game.deck[i] = Game.deck[j];
-            Game.deck[j] = origCard;
+        for(let i = 0; i < game.deck.length; i++) {
+            const j = Math.floor(Math.random() * game.deck.length);
+            const origCard = game.deck[i];
+            game.deck[i] = game.deck[j];
+            game.deck[j] = origCard;
         }
     }
 
-    public static deal(Game: game): void {
-        Game.playerCards.push(Game.deck.pop() ?? "");
-        Game.dealerCards.push(Game.deck.pop() ?? "");
-        Game.playerCards.push(Game.deck.pop() ?? "");
-        Game.dealerCards.push(Game.deck.pop() ?? "");
+    public static deal(game: Game): void {
+        game.playerCards.push(game.deck.pop() ?? "");
+        game.dealerCards.push(game.deck.pop() ?? "");
+        game.playerCards.push(game.deck.pop() ?? "");
+        game.dealerCards.push(game.deck.pop() ?? "");
     }
 
-    public static hit(Game: game): void {
-        Game.playerCards.push(Game.deck.pop() ?? "");
+    public static hit(game: Game): void {
+        game.playerCards.push(game.deck.pop() ?? "");
     }
 
-    public static stay(Game: game): void {
-        while(this.value(Game.dealerCards) < 17) {
-            Game.dealerCards.push(Game.deck.pop() ?? "")
+    public static stay(game: Game): void {
+        while(this.value(game.dealerCards) < 17) {
+            game.dealerCards.push(game.deck.pop() ?? "")
         }
     }
 
