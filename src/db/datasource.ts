@@ -1,6 +1,6 @@
 // Datasource
 import {DataSource} from "typeorm";
-import {game, stat} from "./models";
+import {game, stat} from "../models";
 
 export const dataSource = new DataSource({
     type: "better-sqlite3",
