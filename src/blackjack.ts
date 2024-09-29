@@ -43,28 +43,14 @@ blackjackAPI.get('/deal', async (req, res): Promise<void> => {
 });
 
 blackjackAPI.get('/hit', async (req, res): Promise<void> => {
-    const statService = new ServiceStat();
     const device = Utils.deviceHash(req);
     const retGame = await Utils.checkToken(req, res);
     if(!retGame) {
         return;
     }
-    Gamelogic.hit(retGame);
-    console.log(`HIT: ${retGame.token}`);
-    if(Gamelogic.value(retGame.playerCards) > 21) {
-        retGame.status = "Bust";
-        console.log("BUST");
-    }
 
-    const gameService = new ServiceGame();
-    const resp = new ResponseMsg(retGame.token, retGame.playerCards, [],
-        Gamelogic.value(retGame.playerCards), 0, retGame.status);
-    if(retGame.status === "Bust") {
-        await gameService.deleteGame(retGame)
-        await statService.updateStats(device, GameState.Loss);
-    } else {
-        await gameService.saveGame(retGame);
-    }
+    const resp = await Gamelogic.hit(retGame, device);
+
     res.send(JSON.stringify(resp));
 });
 

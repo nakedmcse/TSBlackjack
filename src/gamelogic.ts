@@ -1,5 +1,6 @@
 // Game logic functions
-import {Game} from "./models";
+import {Game, GameState, ResponseMsg} from "./models";
+import {ServiceGame, ServiceStat} from "./services";
 
 export class Gamelogic {
     public static suits = ['\u2660','\u2663','\u2665','\u2666'];
@@ -26,8 +27,26 @@ export class Gamelogic {
         game.dealerCards.push(game.deck.pop() ?? "");
     }
 
-    public static hit(game: Game): void {
+    public static async hit(game: Game, device: string): Promise<ResponseMsg> {
         game.playerCards.push(game.deck.pop() ?? "");
+
+        console.log(`HIT: ${game.token}`);
+        if(Gamelogic.value(game.playerCards) > 21) {
+            game.status = "Bust";
+            console.log("BUST");
+        }
+
+        const gameService = new ServiceGame();
+        const statService = new ServiceStat();
+        const resp = new ResponseMsg(game.token, game.playerCards, [],
+            this.value(game.playerCards), 0, game.status);
+        if(game.status === "Bust") {
+            await gameService.deleteGame(game)
+            await statService.updateStats(device, GameState.Loss);
+        } else {
+            await gameService.saveGame(game);
+        }
+        return resp;
     }
 
     public static stay(game: Game): void {
