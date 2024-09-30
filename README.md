@@ -20,6 +20,12 @@ You can then execute the API using:
 npm run runjs
 ```
 
+The API can also be run directly without building for development using:
+
+```shell
+npm run run
+```
+
 ## Usage
 
 This API contains 4 interactions.
@@ -52,12 +58,15 @@ curl 'http://localhost:3000/deal'
 ```
 
 ### Hit<a id="hit"></a>
-This endpoint takes the game token as a parameter, and will draw another card for the players hand.
+This endpoint optionally takes the game token as a parameter, and will draw another card for the players hand.
+If the token is not specified then the device ID will be used instead to find the game.
 
 The returned data contains the players cards and the token to play the game.
 
 ```shell
 curl 'http://localhost:3000/hit?token=game-token-goes-here'
+
+curl 'http://localhost:3000/hit'
 ```
 ```json
 {
@@ -71,14 +80,17 @@ curl 'http://localhost:3000/hit?token=game-token-goes-here'
 ```
 
 ### Stay<a id="stay"></a>
-This endpoint takes the game token as a parameter, and will pass the turn to the dealer who will draw cards.
+This endpoint optionally takes the game token as a parameter, and will pass the turn to the dealer who will draw cards.
 Both hands will be evaluated and a winner will be chosen.
+If the token is not specified then the device ID will be used instead to find the game.
 
 The returned data contains the players and the dealers cards, their relative values and the token to play the game.
 However the game is over at this point and an new /deal call must be made to start a new game.
 
 ```shell
 curl 'http://localhost:3000/stay?token=game-token-goes-here'
+
+curl 'http://localhost:3000/stay'
 ```
 ```json
 {
