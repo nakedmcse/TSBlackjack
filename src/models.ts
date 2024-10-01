@@ -61,15 +61,87 @@ export class Stat {
     }
 }
 
+/**
+ * @swagger
+ * components:
+ *   schemas:
+ *     ResponseMsg:
+ *       type: object
+ *       required:
+ *         - token
+ *       properties:
+ *         token:
+ *           type: string
+ *           description: Game token UUID
+ *         cards:
+ *           type: array
+ *           items:
+ *             type: string
+ *           description:  Players Cards
+ *         dealerCards:
+ *           type: array
+ *           items:
+ *             type: string
+ *           description: Dealers Cards
+ *         handValue:
+ *           type: integer
+ *           description: Players cards score
+ *         dealerValue:
+ *           type: integer
+ *           description: Dealers cards value
+ *         status:
+ *           type: string
+ *           enum: [playing, Dealer Bust, Player Wins, Dealer Wins, Draw]
+ *           description: Game Status
+ *
+ */
 export class ResponseMsg {
     public constructor(public token: string, public cards: string[], public dealerCards: string[],
                        public handValue: number, public dealerValue: number, public status: string) {}
 }
 
+/**
+ * @swagger
+ * components:
+ *   schemas:
+ *     ErrorMsg:
+ *       type: object
+ *       required:
+ *         - status
+ *         - message
+ *       properties:
+ *         status:
+ *           type: integer
+ *           description: HTTP Status Number
+ *         message:
+ *           type: string
+ *           description: Descriptive Error Message
+ */
 export class ErrorMsg {
     public constructor(public status: number, public message: string) {}
 }
 
+/**
+ * @swagger
+ * components:
+ *   schemas:
+ *     StatsMsg:
+ *       type: object
+ *       required:
+ *         - wins
+ *         - loses
+ *         - draws
+ *       properties:
+ *         wins:
+ *           type: integer
+ *           description: Number of player wins
+ *         loses:
+ *           type: integer
+ *           description: Number of player loses
+ *         draws:
+ *           type: integer
+ *           description: Number of player draws
+ */
 export class StatsMsg {
     public constructor(public wins:number, public loses:number, public draws:number) {}
 }

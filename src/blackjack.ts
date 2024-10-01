@@ -1,14 +1,19 @@
 // Simple Blackjack API
 import express from 'express';
 import * as crypto from 'node:crypto';
+import swaggerJsdoc from 'swagger-jsdoc';
+import swaggerUi from 'swagger-ui-express';
 import {ErrorMsg, Game, ResponseMsg, StatsMsg} from "./models";
 import {Utils} from "./utils";
 import {dataSource} from "./db/datasource";
 import {Gamelogic} from "./gamelogic";
 import {ServiceGame, ServiceStat} from "./services";
+import {swaggerOpts} from "./swagger";
 
 const blackjackAPI = express();
 blackjackAPI.use(express.json());
+const swaggerSpecs = swaggerJsdoc(swaggerOpts);
+blackjackAPI.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpecs));
 
 // Services
 const gameService = new ServiceGame();
@@ -27,6 +32,23 @@ blackjackAPI.listen(3000, () => {
 });
 
 // Endpoints
+/**
+ * @swagger
+ * tags:
+ *   name: Blackjack
+ *   description: Blackjack API
+ * /deal:
+ *   get:
+ *     summary: Create a new game, or retrieve existing in progress game
+ *     tags: [Blackjack]
+ *     responses:
+ *       200:
+ *         description: Newly created game with first two cards
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ResponseMsg'
+ */
 blackjackAPI.get('/deal', async (req, res): Promise<void> => {
     const deviceId = Utils.deviceHash(req);
     let retGame = await gameService.getDevice(deviceId);
@@ -45,6 +67,31 @@ blackjackAPI.get('/deal', async (req, res): Promise<void> => {
     res.send(JSON.stringify(resp));
 });
 
+/**
+ * @swagger
+ * /hit:
+ *   get:
+ *     summary: Draw a card from the dealer
+ *     tags: [Blackjack]
+ *     parameters:
+ *       - in: query
+ *         name: token
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: Game with a new card added to the players hand
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ResponseMsg'
+ *       400:
+ *         description: Unable to find active game
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ErrorMsg'
+ */
 blackjackAPI.get('/hit', async (req, res): Promise<void> => {
     const device = Utils.deviceHash(req);
     const token = req.query.token as string;
@@ -60,6 +107,31 @@ blackjackAPI.get('/hit', async (req, res): Promise<void> => {
     res.send(JSON.stringify(resp));
 });
 
+/**
+ * @swagger
+ * /stay:
+ *   get:
+ *     summary: Stop drawing cards and allow dealer to draw cards
+ *     tags: [Blackjack]
+ *     parameters:
+ *       - in: query
+ *         name: token
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: Game with both player and dealer hands, values and outcome status
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ResponseMsg'
+ *       400:
+ *         description: Unable to find active game
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ErrorMsg'
+ */
 blackjackAPI.get('/stay', async (req, res): Promise<void> => {
     const device = Utils.deviceHash(req);
     const token = req.query.token as string;
@@ -75,6 +147,26 @@ blackjackAPI.get('/stay', async (req, res): Promise<void> => {
     res.send(JSON.stringify(resp));
 });
 
+/**
+ * @swagger
+ * /stats:
+ *   get:
+ *     summary: Get player stats of wins, loses and draws
+ *     tags: [Blackjack]
+ *     responses:
+ *       200:
+ *         description: Game with a new card added to the players hand
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/StatsMsg'
+ *       400:
+ *         description: Unable to find player by device id
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ErrorMsg'
+ */
 blackjackAPI.get('/stats', async (req, res): Promise<void> => {
     const deviceId = Utils.deviceHash(req);
     let userStats = await statService.getStat(deviceId);
