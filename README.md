@@ -4,6 +4,16 @@
 
 This contains the TypeScript version of the BlackJack game API.
 
+## Environment
+The `.env` file must be created for this application to run.  Rename `.envExample` to `.env`.
+
+### Env File Settings
+Edit the `.env` file to set the following:
+
+| Setting                   | Description                                                             |
+|---------------------------|-------------------------------------------------------------------------|
+| PORT                      | The port the service will listen on                                     |
+
 ## Building
 
 To build this API, clone this repo and then execute:

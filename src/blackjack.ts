@@ -1,15 +1,23 @@
 // Simple Blackjack API
 import express from 'express';
 import * as crypto from 'node:crypto';
+import * as path from "node:path";
 import swaggerJsdoc from 'swagger-jsdoc';
 import swaggerUi from 'swagger-ui-express';
+import {swaggerOpts} from "./swagger";
 import {ErrorMsg, Game, ResponseMsg, StatsMsg} from "./models";
 import {Utils} from "./utils";
 import {dataSource} from "./db/datasource";
 import {Gamelogic} from "./gamelogic";
 import {ServiceGame, ServiceStat} from "./services";
-import {swaggerOpts} from "./swagger";
+import dotenv from "dotenv";
 
+// Environment
+dotenv.config({
+    path: path.resolve(__dirname, "../", ".env")
+})
+
+// Express
 const blackjackAPI = express();
 blackjackAPI.use(express.json());
 const swaggerSpecs = swaggerJsdoc(swaggerOpts);
@@ -20,7 +28,7 @@ const gameService = new ServiceGame();
 const statService = new ServiceStat();
 
 // Bootstrap
-blackjackAPI.listen(3000, () => {
+blackjackAPI.listen(process.env.PORT, () => {
     dataSource.initialize()
         .then(() => {
             console.log("Data Source has been initialized");
@@ -28,7 +36,7 @@ blackjackAPI.listen(3000, () => {
         .catch((err) => {
             console.error("Error during Data Source initialization", err);
         });
-    console.log('BlackJack listening on port 3000');
+    console.log(`BlackJack listening on port ${process.env.PORT}`);
 });
 
 // Endpoints
