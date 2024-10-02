@@ -39,7 +39,6 @@ export class Gamelogic {
             console.log("BUST");
         }
 
-
         const resp = new ResponseMsg(game.token, game.playerCards, [],
             this.value(game.playerCards), 0, game.status);
         if(game.status === "Bust") {
