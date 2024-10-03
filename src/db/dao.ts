@@ -25,6 +25,10 @@ export class DaoGame extends AbstractDao{
     public async getEntryByDevice(device: string):Promise<Game|null> {
         return await this.getRepo<Game>("game").findOneBy({ device: device, status: "playing" });
     }
+
+    public async getHistory(device: string):Promise<Game[]> {
+        return await this.getRepo<Game>("game").findBy({device: device});
+    }
 }
 
 export class DaoStat extends AbstractDao{

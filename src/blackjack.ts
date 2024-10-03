@@ -188,3 +188,12 @@ blackjackAPI.get('/stats', async (req, res): Promise<void> => {
     const retStats = new StatsMsg(userStats.wins, userStats.loses, userStats.draws);
     res.send(JSON.stringify(retStats));
 });
+
+blackjackAPI.get('/history', async (req, res): Promise<void> => {
+    const deviceId = Utils.deviceHash(req);
+    const games = await gameService.getHistory(deviceId);
+    console.log(`HISTORY ${deviceId}`);
+    const historyResp = games.map(x =>
+        new ResponseMsg(x.token, x.playerCards, x.dealerCards, Gamelogic.value(x.playerCards), Gamelogic.value(x.dealerCards), x.status));
+    res.send(JSON.stringify(historyResp));
+})

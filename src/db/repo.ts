@@ -20,6 +20,10 @@ export class RepoGame {
     public async getEntryByDevice(device: string):Promise<Game|null> {
         return await this.dao.getEntryByDevice(device);
     }
+
+    public async getHistory(device: string): Promise<Game[]> {
+        return await this.dao.getHistory(device);
+    }
 }
 
 export class RepoStat {
