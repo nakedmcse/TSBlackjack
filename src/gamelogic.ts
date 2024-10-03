@@ -42,11 +42,9 @@ export class Gamelogic {
         const resp = new ResponseMsg(game.token, game.playerCards, [],
             this.value(game.playerCards), 0, game.status);
         if(game.status === "Bust") {
-            await this.gameService.deleteGame(game)
             await this.statService.updateStats(device, GameState.Loss);
-        } else {
-            await this.gameService.saveGame(game);
-        }
+        };
+        await this.gameService.saveGame(game);
         return resp;
     }
 
@@ -73,7 +71,7 @@ export class Gamelogic {
 
         const resp = new ResponseMsg(game.token, game.playerCards, game.dealerCards,
             playerVal, dealerVal, game.status);
-        await this.gameService.deleteGame(game);
+        await this.gameService.saveGame(game);
         return resp;
     }
 

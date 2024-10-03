@@ -19,11 +19,11 @@ export class DaoGame extends AbstractDao{
     }
 
     public async getEntryByToken(token: string):Promise<Game|null> {
-        return await this.getRepo<Game>("game").findOneBy({ token: token });
+        return await this.getRepo<Game>("game").findOneBy({ token: token, status: "playing" });
     }
 
     public async getEntryByDevice(device: string):Promise<Game|null> {
-        return await this.getRepo<Game>("game").findOneBy({ device: device });
+        return await this.getRepo<Game>("game").findOneBy({ device: device, status: "playing" });
     }
 }
 
