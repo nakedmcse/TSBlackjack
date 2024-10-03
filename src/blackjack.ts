@@ -189,6 +189,28 @@ blackjackAPI.get('/stats', async (req, res): Promise<void> => {
     res.send(JSON.stringify(retStats));
 });
 
+/**
+ * @swagger
+ * /history:
+ *   get:
+ *     summary: Get player history of games
+ *     tags: [Blackjack]
+ *     responses:
+ *       200:
+ *         description: Array of all games from players device
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 $ref: '#/components/schemas/ResponseMsg'
+ *       400:
+ *         description: Unable to find player by device id
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ErrorMsg'
+ */
 blackjackAPI.get('/history', async (req, res): Promise<void> => {
     const deviceId = Utils.deviceHash(req);
     const games = await gameService.getHistory(deviceId);
