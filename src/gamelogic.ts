@@ -63,19 +63,10 @@ export class Gamelogic {
             console.log("DEALER BUST");
             await this.statService.updateStats(device, GameState.Win);
         }
-        else if(playerVal > dealerVal) {
-            game.status = "Player Wins";
-            console.log("PLAYER WIN");
-            await this.statService.updateStats(device, GameState.Win);
-        }
-        else if(dealerVal > playerVal) {
-            game.status = "Dealer Wins";
-            console.log("DEALER WIN");
-            await this.statService.updateStats(device, GameState.Loss);
-        }
         else {
-            game.status = "Draw";
-            console.log("DRAW");
+            const totalScore = playerVal - dealerVal;
+            game.status = totalScore === 0 ? "Draw" : totalScore > 0 ? "Player Wins" : "Dealer Wins";
+            console.log(game.status.toUpperCase());
             await this.statService.updateStats(device, GameState.Draw);
         }
 
