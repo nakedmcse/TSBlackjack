@@ -1,6 +1,6 @@
 # TSBlackjack
-[![GitHub issues](https://img.shields.io/github/issues/waifuvault/waifuVault-python-api.png)](https://github.com/nakedmcse/TSBlackjack/issues)
-[![last-commit](https://img.shields.io/github/last-commit/waifuvault/waifuVault-python-api)](https://github.com/nakedmcse/TSBlackjack/commits/master)
+[![GitHub issues](https://img.shields.io/github/issues/nakedmcse/TSBlackjack.png)](https://github.com/nakedmcse/TSBlackjack/issues)
+[![last-commit](https://img.shields.io/github/last-commit/nakedmcse/TSBlackjack)](https://github.com/nakedmcse/TSBlackjack/commits/master)
 
 This contains the TypeScript version of the BlackJack game API.
 
@@ -19,6 +19,7 @@ Edit the `.env` file to set the following:
 To build this API, clone this repo and then execute:
 
 ```shell
+npm install
 npm run build
 ```
 
@@ -38,12 +39,15 @@ npm run run
 
 ## Usage
 
-This API contains 4 interactions.
+This API contains 5 interactions.
 
 1. [Deal](#deal)
 2. [Hit](#hit)
 3. [Stay](#stay)
 4. [Stats](#stats)
+5. [History](#history)
+
+> **NOTE:** Depending on your shell, you may need to remove the quotes around the URLS in the CURL commands
 
 ### Deal<a id="deal"></a>
 This endpoint takes no parameters, and will either start a new game if one does not exist for the device making the call,
@@ -125,4 +129,19 @@ curl 'http://localhost:3000/stats'
   "loses":2,
   "draws":1
 }
+```
+
+### History<a id="history"></a>
+This endpoint takes no parameters and will return the game history for the device making the call, as an array of responses.
+
+```shell
+curl 'http://localhost:3000/history'
+```
+
+```json
+[
+  {"token":"6c359eb8-16bb-406a-93ff-6fbdaf1e5519","cards":["6♣","5♦","10♥"],"dealerCards":["7♠","5♥","Q♣"],"handValue":21,"dealerValue":22,"status":"Dealer Bust"},
+  {"token":"de3db63b-4363-4c33-80cc-3ff51f02ea81","cards":["9♠","5♥","7♥"],"dealerCards":["Q♥","5♠","10♥"],"handValue":21,"dealerValue":25,"status":"Dealer Bust"},
+  {"token":"420b767b-9506-47cc-a1e8-ed11d513fd30","cards":["4♣","10♣","9♦"],"dealerCards":["6♣","3♥"],"handValue":23,"dealerValue":9,"status":"Bust"}
+]
 ```
