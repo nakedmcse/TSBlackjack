@@ -65,9 +65,10 @@ export class Gamelogic {
         }
         else {
             const totalScore = playerVal - dealerVal;
+            const gameState = totalScore === 0 ? GameState.Draw : totalScore > 0 ? GameState.Win : GameState.Loss;
             game.status = totalScore === 0 ? "Draw" : totalScore > 0 ? "Player Wins" : "Dealer Wins";
             console.log(game.status.toUpperCase());
-            await this.statService.updateStats(device, GameState.Draw);
+            await this.statService.updateStats(device, gameState);
         }
 
         const resp = new ResponseMsg(game.token, game.playerCards, game.dealerCards,
