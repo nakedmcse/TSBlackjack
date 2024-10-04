@@ -21,8 +21,8 @@ export class RepoGame {
         return await this.dao.getEntryByDevice(device);
     }
 
-    public async getHistory(device: string): Promise<Game[]> {
-        return await this.dao.getHistory(device);
+    public async getHistory(device: string, start: string|null): Promise<Game[]> {
+        return await this.dao.getHistory(device, start);
     }
 }
 

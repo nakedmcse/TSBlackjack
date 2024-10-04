@@ -25,8 +25,8 @@ export class ServiceGame {
         return token === "" ? await this.getDevice(device) : await this.getToken(token);
     }
 
-    public async getHistory(device: string): Promise<Game[]> {
-        return await this.repo.getHistory(device);
+    public async getHistory(device: string, start: string|null): Promise<Game[]> {
+        return await this.repo.getHistory(device, start);
     }
 }
 

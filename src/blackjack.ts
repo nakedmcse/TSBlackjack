@@ -84,6 +84,7 @@ blackjackAPI.get('/deal', async (req, res): Promise<void> => {
  *     parameters:
  *       - in: query
  *         name: token
+ *         description: Optional game token
  *         schema:
  *           type: string
  *     responses:
@@ -124,6 +125,7 @@ blackjackAPI.get('/hit', async (req, res): Promise<void> => {
  *     parameters:
  *       - in: query
  *         name: token
+ *         description: Optional game token
  *         schema:
  *           type: string
  *     responses:
@@ -195,6 +197,12 @@ blackjackAPI.get('/stats', async (req, res): Promise<void> => {
  *   get:
  *     summary: Get player history of games
  *     tags: [Blackjack]
+ *     parameters:
+ *       - in: query
+ *         name: start
+ *         description: Optional start date
+ *         schema:
+ *           type: string
  *     responses:
  *       200:
  *         description: Array of all games from players device
@@ -213,8 +221,9 @@ blackjackAPI.get('/stats', async (req, res): Promise<void> => {
  */
 blackjackAPI.get('/history', async (req, res): Promise<void> => {
     const deviceId = Utils.deviceHash(req);
-    const games = await gameService.getHistory(deviceId);
-    console.log(`HISTORY ${deviceId}`);
+    const start = req.query.start ? req.query.start as string : null;
+    const games = await gameService.getHistory(deviceId, start);
+    console.log(`HISTORY ${deviceId} ${start}`);
     const historyResp = games.map(x =>
         new ResponseMsg(x.token, x.playerCards, x.dealerCards, Gamelogic.value(x.playerCards), Gamelogic.value(x.dealerCards), x.status));
     res.send(JSON.stringify(historyResp));

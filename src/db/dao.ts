@@ -1,7 +1,7 @@
 // DAO for objects
 import {dataSource} from "./datasource";
 import {Game, Stat} from "../models";
-import {ObjectLiteral, Repository} from "typeorm";
+import {MoreThanOrEqual, ObjectLiteral, Repository} from "typeorm";
 
 export class AbstractDao {
     public getRepo<T extends ObjectLiteral>(target: string): Repository<T> {
@@ -26,8 +26,15 @@ export class DaoGame extends AbstractDao{
         return await this.getRepo<Game>("game").findOneBy({ device: device, status: "playing" });
     }
 
-    public async getHistory(device: string):Promise<Game[]> {
-        return await this.getRepo<Game>("game").findBy({device: device});
+    public async getHistory(device: string, start: string|null):Promise<Game[]> {
+        if (start) {
+            const startDate = new Date(start).valueOf();
+            if(Number.isNaN(startDate)) {
+                return [];
+            }
+            return await this.getRepo<Game>("game").findBy({device: device, startedOn: MoreThanOrEqual(startDate)});
+        }
+        return await this.getRepo<Game>("game").findBy({ device: device });
     }
 }
 

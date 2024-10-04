@@ -132,9 +132,11 @@ curl 'http://localhost:3000/stats'
 ```
 
 ### History<a id="history"></a>
-This endpoint takes no parameters and will return the game history for the device making the call, as an array of responses.
+This endpoint optionally takes the start date as a parameter and will return the game history for the device making the call, after the start date if specified, as an array of responses.
 
 ```shell
+curl 'http://localhost:3000/history?start=2024-10-03'
+
 curl 'http://localhost:3000/history'
 ```
 
