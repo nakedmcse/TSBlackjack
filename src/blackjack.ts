@@ -70,7 +70,7 @@ blackjackAPI.get('/deal', async (req, res): Promise<void> => {
         retGame = newGame;
     }
     console.log(`DEAL: ${retGame.token}`);
-    const resp = new ResponseMsg(retGame.token, retGame.playerCards, [],
+    const resp = new ResponseMsg(retGame.token, retGame.device, retGame.playerCards, [],
         Gamelogic.value(retGame.playerCards), 0, retGame.status);
     res.send(JSON.stringify(resp));
 });
@@ -225,6 +225,6 @@ blackjackAPI.get('/history', async (req, res): Promise<void> => {
     const games = await gameService.getHistory(deviceId, start);
     console.log(`HISTORY ${deviceId} ${start}`);
     const historyResp = games.map(x =>
-        new ResponseMsg(x.token, x.playerCards, x.dealerCards, Gamelogic.value(x.playerCards), Gamelogic.value(x.dealerCards), x.status));
+        new ResponseMsg(x.token, x.device, x.playerCards, x.dealerCards, Gamelogic.value(x.playerCards), Gamelogic.value(x.dealerCards), x.status));
     res.send(JSON.stringify(historyResp));
 })

@@ -73,6 +73,9 @@ export class Stat {
  *         token:
  *           type: string
  *           description: Game token UUID
+ *         device:
+ *           type: string
+ *           description: Device Hash
  *         cards:
  *           type: array
  *           items:
@@ -96,7 +99,7 @@ export class Stat {
  *
  */
 export class ResponseMsg {
-    public constructor(public token: string, public cards: string[], public dealerCards: string[],
+    public constructor(public token: string, public device: string, public cards: string[], public dealerCards: string[],
                        public handValue: number, public dealerValue: number, public status: string) {}
 }
 

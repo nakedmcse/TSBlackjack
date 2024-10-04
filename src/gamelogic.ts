@@ -39,7 +39,7 @@ export class Gamelogic {
             console.log("BUST");
         }
 
-        const resp = new ResponseMsg(game.token, game.playerCards, [],
+        const resp = new ResponseMsg(game.token, game.device, game.playerCards, [],
             this.value(game.playerCards), 0, game.status);
         if(game.status === "Bust") {
             await this.statService.updateStats(device, GameState.Loss);
@@ -69,7 +69,7 @@ export class Gamelogic {
             await this.statService.updateStats(device, gameState);
         }
 
-        const resp = new ResponseMsg(game.token, game.playerCards, game.dealerCards,
+        const resp = new ResponseMsg(game.token, game.device, game.playerCards, game.dealerCards,
             playerVal, dealerVal, game.status);
         await this.gameService.saveGame(game);
         return resp;

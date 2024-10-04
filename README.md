@@ -63,6 +63,7 @@ curl 'http://localhost:3000/deal'
 ```json
 {
   "token":"190324df-34c2-4c07-97a5-1a06a21c9f6d",
+  "device":"d08d4747b78e17c5459e8744604b90b35e669426f9c9d8e5b161b8828711c1ba",
   "cards":["J♦","A♥"],
   "dealerCards":[],
   "handValue":21,
@@ -85,6 +86,7 @@ curl 'http://localhost:3000/hit'
 ```json
 {
   "token":"2203e6c9-7383-48d9-9002-f441520a7791",
+  "device":"d08d4747b78e17c5459e8744604b90b35e669426f9c9d8e5b161b8828711c1ba",
   "cards":["3♥","10♦","3♦"],
   "dealerCards":[],
   "handValue":16,
@@ -109,6 +111,7 @@ curl 'http://localhost:3000/stay'
 ```json
 {
   "token":"2203e6c9-7383-48d9-9002-f441520a7791",
+  "device":"d08d4747b78e17c5459e8744604b90b35e669426f9c9d8e5b161b8828711c1ba",
   "cards":["J♦","A♥"],
   "dealerCards":["6♣","J♣","6♠"],
   "handValue":21,
@@ -142,8 +145,8 @@ curl 'http://localhost:3000/history'
 
 ```json
 [
-  {"token":"6c359eb8-16bb-406a-93ff-6fbdaf1e5519","cards":["6♣","5♦","10♥"],"dealerCards":["7♠","5♥","Q♣"],"handValue":21,"dealerValue":22,"status":"Dealer Bust"},
-  {"token":"de3db63b-4363-4c33-80cc-3ff51f02ea81","cards":["9♠","5♥","7♥"],"dealerCards":["Q♥","5♠","10♥"],"handValue":21,"dealerValue":25,"status":"Dealer Bust"},
-  {"token":"420b767b-9506-47cc-a1e8-ed11d513fd30","cards":["4♣","10♣","9♦"],"dealerCards":["6♣","3♥"],"handValue":23,"dealerValue":9,"status":"Bust"}
+  {"token":"6c359eb8-16bb-406a-93ff-6fbdaf1e5519","device":"d08d4747b78e17c5459e8744604b90b35e669426f9c9d8e5b161b8828711c1ba","cards":["6♣","5♦","10♥"],"dealerCards":["7♠","5♥","Q♣"],"handValue":21,"dealerValue":22,"status":"Dealer Bust"},
+  {"token":"de3db63b-4363-4c33-80cc-3ff51f02ea81","device":"d08d4747b78e17c5459e8744604b90b35e669426f9c9d8e5b161b8828711c1ba","cards":["9♠","5♥","7♥"],"dealerCards":["Q♥","5♠","10♥"],"handValue":21,"dealerValue":25,"status":"Dealer Bust"},
+  {"token":"420b767b-9506-47cc-a1e8-ed11d513fd30","device":"d08d4747b78e17c5459e8744604b90b35e669426f9c9d8e5b161b8828711c1ba","cards":["4♣","10♣","9♦"],"dealerCards":["6♣","3♥"],"handValue":23,"dealerValue":9,"status":"Bust"}
 ]
 ```
