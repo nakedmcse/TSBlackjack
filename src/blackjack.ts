@@ -165,7 +165,7 @@ blackjackAPI.get('/stay', async (req, res): Promise<void> => {
  *     tags: [Blackjack]
  *     responses:
  *       200:
- *         description: Game with a new card added to the players hand
+ *         description: Aggregate win, loss, draw stats for device
  *         content:
  *           application/json:
  *             schema:
