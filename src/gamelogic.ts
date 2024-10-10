@@ -77,6 +77,7 @@ export class Gamelogic {
 
     public static value(cards: string[]): number {
         let retval: number = 0;
+        let aces: number = 0;
         for(const card of cards) {
             const intVal = parseInt(card,10);
             if(!isNaN(intVal)) {
@@ -88,8 +89,13 @@ export class Gamelogic {
                 continue;
             }
             if(card.includes("A")) {
-                retval += (retval + 11 > 21) ? 1 : 11;
+                retval += 11;
+                aces++;
             }
+        }
+        while(retval > 21 && aces > 0) {
+            retval -= 10;
+            aces--;
         }
         return retval;
     }
