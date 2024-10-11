@@ -19,6 +19,7 @@ dotenv.config({
 
 // Express
 const blackjackAPI = express();
+blackjackAPI.set('etag', false);
 blackjackAPI.use(express.json());
 const swaggerSpecs = swaggerJsdoc(swaggerOpts);
 blackjackAPI.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpecs));
@@ -72,6 +73,7 @@ blackjackAPI.post('/deal', async (req, res): Promise<void> => {
     console.log(`DEAL: ${retGame.token}`);
     const resp = new ResponseMsg(retGame.token, retGame.device, retGame.playerCards, [],
         Gamelogic.value(retGame.playerCards), 0, retGame.status);
+    Utils.setNoCache(res);
     res.send(JSON.stringify(resp));
 });
 
@@ -113,6 +115,7 @@ blackjackAPI.post('/hit', async (req, res): Promise<void> => {
 
     const resp = await Gamelogic.hit(retGame, device);
 
+    Utils.setNoCache(res);
     res.send(JSON.stringify(resp));
 });
 
@@ -154,6 +157,7 @@ blackjackAPI.post('/stay', async (req, res): Promise<void> => {
 
     const resp = await Gamelogic.stay(retGame, device);
 
+    Utils.setNoCache(res);
     res.send(JSON.stringify(resp));
 });
 
@@ -188,6 +192,7 @@ blackjackAPI.get('/stats', async (req, res): Promise<void> => {
         return;
     }
     const retStats = new StatsMsg(userStats.wins, userStats.loses, userStats.draws);
+    Utils.setNoCache(res);
     res.send(JSON.stringify(retStats));
 });
 
@@ -226,5 +231,6 @@ blackjackAPI.get('/history', async (req, res): Promise<void> => {
     console.log(`HISTORY ${deviceId} ${start}`);
     const historyResp = games.map(x =>
         new ResponseMsg(x.token, x.device, x.playerCards, x.dealerCards, Gamelogic.value(x.playerCards), Gamelogic.value(x.dealerCards), x.status));
+    Utils.setNoCache(res);
     res.send(JSON.stringify(historyResp));
 })
