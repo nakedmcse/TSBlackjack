@@ -46,7 +46,7 @@ blackjackAPI.listen(process.env.PORT, () => {
  *   name: Blackjack
  *   description: Blackjack API
  * /deal:
- *   get:
+ *   post:
  *     summary: Create a new game, or retrieve existing in progress game
  *     tags: [Blackjack]
  *     responses:
@@ -57,7 +57,7 @@ blackjackAPI.listen(process.env.PORT, () => {
  *             schema:
  *               $ref: '#/components/schemas/ResponseMsg'
  */
-blackjackAPI.get('/deal', async (req, res): Promise<void> => {
+blackjackAPI.post('/deal', async (req, res): Promise<void> => {
     const deviceId = Utils.deviceHash(req);
     let retGame = await gameService.getDevice(deviceId);
 
@@ -78,7 +78,7 @@ blackjackAPI.get('/deal', async (req, res): Promise<void> => {
 /**
  * @swagger
  * /hit:
- *   get:
+ *   post:
  *     summary: Draw a card from the dealer
  *     tags: [Blackjack]
  *     parameters:
@@ -101,7 +101,7 @@ blackjackAPI.get('/deal', async (req, res): Promise<void> => {
  *             schema:
  *               $ref: '#/components/schemas/ErrorMsg'
  */
-blackjackAPI.get('/hit', async (req, res): Promise<void> => {
+blackjackAPI.post('/hit', async (req, res): Promise<void> => {
     const device = Utils.deviceHash(req);
     const token = req.query.token as string;
     const retGame = await gameService.getActiveGame(device, token);
@@ -119,7 +119,7 @@ blackjackAPI.get('/hit', async (req, res): Promise<void> => {
 /**
  * @swagger
  * /stay:
- *   get:
+ *   post:
  *     summary: Stop drawing cards and allow dealer to draw cards
  *     tags: [Blackjack]
  *     parameters:
@@ -142,7 +142,7 @@ blackjackAPI.get('/hit', async (req, res): Promise<void> => {
  *             schema:
  *               $ref: '#/components/schemas/ErrorMsg'
  */
-blackjackAPI.get('/stay', async (req, res): Promise<void> => {
+blackjackAPI.post('/stay', async (req, res): Promise<void> => {
     const device = Utils.deviceHash(req);
     const token = req.query.token as string;
     const retGame = await gameService.getActiveGame(device, token);
