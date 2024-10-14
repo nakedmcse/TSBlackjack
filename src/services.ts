@@ -29,8 +29,8 @@ export class ServiceGame {
         return await this.repo.getHistory(device, start);
     }
 
-    public async deleteHistory(device: string): Promise<boolean> {
-        return await this.repo.deleteHistory(device);
+    public async deleteHistory(device: string, token: string | null): Promise<boolean> {
+        return await this.repo.deleteHistory(device, token);
     }
 }
 

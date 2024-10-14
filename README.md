@@ -154,11 +154,14 @@ curl 'http://localhost:3000/history'
 
 ### Delete<a id="delete"></a>
 This endpoint takes a parameter `sure` which must be set to true and will delete the game history for the device making the call.
+It can also take an option path component with the game token.  If token is specified then just that game will be deleted.
 
 > **NOTE:** If sure is not set to true, the history will not be deleted
 
 ```shell
-curl -X 'POST' 'http://localhost:3000/delete?sure=true'
+curl -X 'DELETE' 'http://localhost:3000/delete?sure=true'
+
+curl -X 'DELETE' 'http://localhost:3000/delete/420b767b-9506-47cc-a1e8-ed11d513fd30?sure=true'
 ```
 
 ```json

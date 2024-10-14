@@ -25,8 +25,8 @@ export class RepoGame {
         return await this.dao.getHistory(device, start);
     }
 
-    public async deleteHistory(device: string): Promise<boolean> {
-        return await this.dao.deleteHistory(device);
+    public async deleteHistory(device: string, token: string | null): Promise<boolean> {
+        return await this.dao.deleteHistory(device, token);
     }
 }
 

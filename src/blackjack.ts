@@ -264,9 +264,10 @@ blackjackAPI.get('/history', async (req, res): Promise<void> => {
  *             schema:
  *               $ref: '#/components/schemas/ErrorMsg'
  */
-blackjackAPI.post('/delete', async (req, res): Promise<void> => {
+blackjackAPI.delete('/delete/:token?', async (req, res): Promise<void> => {
     const deviceId = Utils.deviceHash(req);
     const sure = req.query.sure ? req.query.sure as string : null;
+    const token = req.params.token ? req.params.token as string : null;
     if (!sure) {
         console.log('DELETE HISTORY MISSING SURE');
         Utils.setNoCache(res);
@@ -274,7 +275,7 @@ blackjackAPI.post('/delete', async (req, res): Promise<void> => {
         res.send(JSON.stringify(new ErrorMsg(400, "Delete did not have sure set")));
         return;
     }
-    const retval = await gameService.deleteHistory(deviceId);
+    const retval = await gameService.deleteHistory(deviceId, token);
     console.log(`DELETE HISTORY ${deviceId}`);
     Utils.setNoCache(res);
     res.send(JSON.stringify(retval))
