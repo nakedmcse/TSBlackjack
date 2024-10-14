@@ -36,6 +36,12 @@ export class DaoGame extends AbstractDao{
         }
         return await this.getRepo<Game>("game").findBy({ device: device, status: Not("playing") });
     }
+
+    public async deleteHistory(device:string): Promise<boolean> {
+        const manager =  this.getRepo<Game>("game").manager;
+        await manager.query(`DELETE FROM game WHERE device = ? AND status <> 'playing'`, [device]);
+        return true;
+    }
 }
 
 export class DaoStat extends AbstractDao{

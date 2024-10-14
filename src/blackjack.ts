@@ -108,6 +108,7 @@ blackjackAPI.post('/hit', async (req, res): Promise<void> => {
     const token = req.query.token as string;
     const retGame = await gameService.getActiveGame(device, token);
     if(!retGame) {
+        Utils.setNoCache(res);
         res.status(400);
         res.send(JSON.stringify(new ErrorMsg(400, "Missing Game")));
         return;
@@ -150,6 +151,7 @@ blackjackAPI.post('/stay', async (req, res): Promise<void> => {
     const token = req.query.token as string;
     const retGame = await gameService.getActiveGame(device, token);
     if(!retGame) {
+        Utils.setNoCache(res);
         res.status(400);
         res.send(JSON.stringify(new ErrorMsg(400, "Missing Game")));
         return;
@@ -186,6 +188,7 @@ blackjackAPI.get('/stats', async (req, res): Promise<void> => {
     let userStats = await statService.getStat(deviceId);
     console.log('STATS');
     if (!userStats) {
+        Utils.setNoCache(res);
         console.log('MISSING DEVICE');
         res.status(400);
         res.send(JSON.stringify(new ErrorMsg(400, "Missing Device")));
@@ -233,4 +236,46 @@ blackjackAPI.get('/history', async (req, res): Promise<void> => {
         new ResponseMsg(x.token, x.device, x.playerCards, x.dealerCards, Gamelogic.value(x.playerCards), Gamelogic.value(x.dealerCards), x.status));
     Utils.setNoCache(res);
     res.send(JSON.stringify(historyResp));
+})
+
+/**
+ * @swagger
+ * /delete:
+ *   post:
+ *     summary: Delete player history of games
+ *     tags: [Blackjack]
+ *     parameters:
+ *       - in: query
+ *         name: sure
+ *         description: Must be set to true to delete
+ *         schema:
+ *           type: boolean
+ *     responses:
+ *       200:
+ *         description: true when deleted
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: boolean
+ *       400:
+ *         description: Unable to find player by device id
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ErrorMsg'
+ */
+blackjackAPI.post('/delete', async (req, res): Promise<void> => {
+    const deviceId = Utils.deviceHash(req);
+    const sure = req.query.sure ? req.query.sure as string : null;
+    if (!sure) {
+        console.log('DELETE HISTORY MISSING SURE');
+        Utils.setNoCache(res);
+        res.status(400);
+        res.send(JSON.stringify(new ErrorMsg(400, "Delete did not have sure set")));
+        return;
+    }
+    const retval = await gameService.deleteHistory(deviceId);
+    console.log(`DELETE HISTORY ${deviceId}`);
+    Utils.setNoCache(res);
+    res.send(JSON.stringify(retval))
 })

@@ -28,6 +28,10 @@ export class ServiceGame {
     public async getHistory(device: string, start: string|null): Promise<Game[]> {
         return await this.repo.getHistory(device, start);
     }
+
+    public async deleteHistory(device: string): Promise<boolean> {
+        return await this.repo.deleteHistory(device);
+    }
 }
 
 export class ServiceStat {

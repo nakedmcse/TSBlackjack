@@ -24,6 +24,10 @@ export class RepoGame {
     public async getHistory(device: string, start: string|null): Promise<Game[]> {
         return await this.dao.getHistory(device, start);
     }
+
+    public async deleteHistory(device: string): Promise<boolean> {
+        return await this.dao.deleteHistory(device);
+    }
 }
 
 export class RepoStat {
