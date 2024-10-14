@@ -241,7 +241,7 @@ blackjackAPI.get('/history', async (req, res): Promise<void> => {
 /**
  * @swagger
  * /delete:
- *   post:
+ *   delete:
  *     summary: Delete player history of games
  *     tags: [Blackjack]
  *     parameters:
@@ -250,6 +250,11 @@ blackjackAPI.get('/history', async (req, res): Promise<void> => {
  *         description: Must be set to true to delete
  *         schema:
  *           type: boolean
+ *       - in: path
+ *         name: token
+ *         description: Token for a single game to delete
+ *         schema:
+ *           type: string
  *     responses:
  *       200:
  *         description: true when deleted
