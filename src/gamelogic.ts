@@ -17,9 +17,7 @@ export class Gamelogic {
         }
         for(let i = 0; i < game.deck.length; i++) {
             const j = Math.floor(Math.random() * game.deck.length);
-            const origCard = game.deck[i];
-            game.deck[i] = game.deck[j];
-            game.deck[j] = origCard;
+            [game.deck[i], game.deck[j]] = [game.deck[j], game.deck[i]];
         }
     }
 
@@ -43,7 +41,7 @@ export class Gamelogic {
             this.value(game.playerCards), 0, game.status);
         if(game.status === "Bust") {
             await this.statService.updateStats(device, GameState.Loss);
-        };
+        }
         await this.gameService.saveGame(game);
         return resp;
     }
@@ -93,9 +91,8 @@ export class Gamelogic {
                 aces++;
             }
         }
-        while(retval > 21 && aces > 0) {
+        while(retval > 21 && aces-- > 0) {
             retval -= 10;
-            aces--;
         }
         return retval;
     }
